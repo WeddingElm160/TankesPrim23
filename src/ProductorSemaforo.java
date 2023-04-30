@@ -41,7 +41,7 @@ public class ProductorSemaforo extends Thread {
             try {
                 s.acquire();
                 if (tanke[0].size() < 20) {
-                    tanke[0].pushAgua(new Agua(new Rectangle2D.Double(x, y - ((y / 20) - 2) * tanke[0].size(), 100, (y / 20) - 2), color));
+                    tanke[0].pushAgua(new Agua(x, y - ((y / 20) - 2) * tanke[0].size(), 100, (y / 20) - 2, color));
                     executionCount++;
                     //dibujar.repaint();
                 }
