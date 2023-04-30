@@ -38,7 +38,7 @@ public class TankesPrim23 extends JFrame implements ActionListener{
     private static ConsumidorBarreras consumidorB1, consumidorB2;
     private static LiFoTanke[] tankes;
     private static Queue<Integer>[] volumenTankes;
-    private int aux1;//comentario de hola mundo
+    private int aux1;
     
     TankesPrim23(){
         aux1 = 0;
