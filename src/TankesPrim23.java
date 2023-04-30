@@ -17,6 +17,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.*;
 import mpi.MPI;
+import mpi.Status;
 
 public class TankesPrim23 extends JFrame implements ActionListener{
     private DibujaTank panelTank;
@@ -219,11 +220,12 @@ public class TankesPrim23 extends JFrame implements ActionListener{
         
         switch(rank){
             case 0:
-              int aux[] = new int[1];
+              int dest = 0;
               while(true){
                   //MPI.COMM_WORLD.Recv(aux, 0, 1, MPI.INT, 1, 0);
-                  MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 1, 0);
-                  System.out.println(tanke[0].getName());
+                  Status s = MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 1, 0);
+                  
+                  System.out.println(tanke[0].getName()+" -> "+s.source);
               }
             case 1:
                 System.out.println(rank+" -> "+tanke[0].getName());
@@ -233,10 +235,12 @@ public class TankesPrim23 extends JFrame implements ActionListener{
                 consumidorM1 = new ConsumidorMutex(mutex, tanke, true, 0);
                 productorM2 = new ProductorMutex(mutex2, tanke, true,x  + (sep * rank-1), h + 40, Color.RED);
                 consumidorM2 = new ConsumidorMutex(mutex2, tanke, true, 0);
-                productorM1.start(); consumidorM1.start(); productorM2.start(); consumidorM2.start();
+                //productorM1.start(); consumidorM1.start(); productorM2.start(); consumidorM2.start();
                 break;
-            /*case 2: 
-                System.out.println(rank+" -> "+tanke[0].getName());
+            case 2: 
+              System.out.println("dfsdf");
+              MPI.COMM_WORLD.Send(tanke, 0, 1, MPI.OBJECT, 0, 0);
+                /*System.out.println(rank+" -> "+tanke[0].getName());
                 Semaphore semaforo = new Semaphore(1, true);
                 Semaphore semaforo2 = new Semaphore(1, true);
                 productorS1 = new ProductorSemaforo(semaforo, tanke, isRunning,x  + (sep * rank-1), h + 40, Color.GREEN);
