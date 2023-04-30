@@ -1,21 +1,15 @@
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class Agua {
-    private Rectangle2D agua;
+public class Agua extends Rectangle2D.Double{
     private Color color;
- 
-    public Rectangle2D getAgua() {
-        return agua;
-    }
 
     public Color getColor() {
         return color;
     }
     
-
-    Agua(Rectangle2D agua, Color color) {
-        this.agua = agua;
+    Agua(double x, double y, double w, double h, Color color) {
+        super(x,y,w,h);
         this.color = color;
     }
     

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -88,10 +89,6 @@ public class TankesPrim23 extends JFrame implements ActionListener{
     public static LiFoTanke[] getTankes() {
         return tankes;
     }
-    
-    
-    
-    
     
     void changebtnState(){
         if (isRunning) {
@@ -222,13 +219,12 @@ public class TankesPrim23 extends JFrame implements ActionListener{
         
         switch(rank){
             case 0:
-                int aux[] = new int[1];
-                while(true){
-                    //MPI.COMM_WORLD.Recv(aux, 0, 1, MPI.INT, 1, 0);
-                    MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 1, 0);
-                    System.out.println(aux[0]);
-                }
-                
+              int aux[] = new int[1];
+              while(true){
+                  //MPI.COMM_WORLD.Recv(aux, 0, 1, MPI.INT, 1, 0);
+                  MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 1, 0);
+                  System.out.println(tanke[0].getName());
+              }
             case 1:
                 System.out.println(rank+" -> "+tanke[0].getName());
                 Lock mutex = new ReentrantLock();
@@ -239,7 +235,7 @@ public class TankesPrim23 extends JFrame implements ActionListener{
                 consumidorM2 = new ConsumidorMutex(mutex2, tanke, true, 0);
                 productorM1.start(); consumidorM1.start(); productorM2.start(); consumidorM2.start();
                 break;
-            case 2: 
+            /*case 2: 
                 System.out.println(rank+" -> "+tanke[0].getName());
                 Semaphore semaforo = new Semaphore(1, true);
                 Semaphore semaforo2 = new Semaphore(1, true);
@@ -274,7 +270,7 @@ public class TankesPrim23 extends JFrame implements ActionListener{
                 consumidorB1 = new ConsumidorBarreras(barrera1, tanke, 4);
                 productorB2 = new ProductorBarreras(barrera2, tanke,  + (sep * rank-1), h + 40, Color.RED);
                 consumidorB2 = new ConsumidorBarreras(barrera2, tanke, 4);
-                break;
+                break;*/
         }
         
         MPI.Finalize();

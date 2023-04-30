@@ -10,7 +10,7 @@ import java.util.Stack;
  * se va a almacenar el agua (en cola) se empila y se desempila
  */
 public class LiFoTanke extends Stack<Agua> {
-    String name;
+    private String name;
 
     //paso 1: agregar el agua en una fila
     private Queue<Integer> cuentaProductor, cuentaConsumidor;
@@ -26,6 +26,20 @@ public class LiFoTanke extends Stack<Agua> {
         cuentaProductor = new LinkedList<>(Collections.nCopies(20, 0));
         cuentaConsumidor = new LinkedList<>(Collections.nCopies(20, 0));
     }
+
+    public LiFoTanke(String name, Queue<Integer> cuentaProductor, Queue<Integer> cuentaConsumidor, Queue<Integer>[] cuentas) {
+      this.name = name;
+      this.cuentaProductor = cuentaProductor;
+      this.cuentaConsumidor = cuentaConsumidor;
+      this.cuentas = cuentas;
+    }
+    
+    /*@Override
+    public LiFoTanke clone(){
+      LiFoTanke tanke = new LiFoTanke(name);
+      tanke.addAll(this);
+      return tanke;
+    }*/
 
     public void pushAgua(Agua agua) {
         push(agua);
@@ -56,5 +70,11 @@ public class LiFoTanke extends Stack<Agua> {
         return name;
     }
     
-    
 }
+
+/*class tankePkg {
+  public int size;
+  public String name;
+  public 
+  tankePkg(){}
+}*/

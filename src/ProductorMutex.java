@@ -1,6 +1,7 @@
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
+import java.util.Stack;
 import java.util.concurrent.locks.*;
 import mpi.MPI;
 //hacer un mutex con la clase hecha por nosotros y otra con la librería en total 5 tanques
@@ -37,13 +38,8 @@ public class ProductorMutex extends Thread {
             }
             if (tanke[0].size() < 20) {
                 mutex.lock();
-                tanke[0].pushAgua(new Agua(new Rectangle2D.Double(x, y - ((y / 20) - 2) * tanke[0].size(), 100, (y / 20) - 2), color));
-                executionCount++;
-                //dibujar.repaint();
-                int aux[] = new int[1];
-                aux[0] = 45;
-                System.out.println("envia");
-                //MPI.COMM_WORLD.Send(aux, 0, 1, MPI.INT, 0, 0);
+                tanke[0].pushAgua(new Agua(x, y - ((y / 20) - 2) * tanke[0].size(), 100, (y / 20) - 2, color));
+                executionCount++;               
                 MPI.COMM_WORLD.Send(tanke, 0, 1, MPI.OBJECT, 0, 0);
                 mutex.unlock();
             }

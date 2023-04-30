@@ -63,23 +63,23 @@ public class DibujaTank extends JPanel{
             for (int i = 0; i < 20; i++) {
                 if (i < t1.size()) {
                     g2.setColor(t1.get(i).getColor());
-                    g2.fill(t1.get(i).getAgua());
+                    g2.fill(t1.get(i));
                 }
                 if (i < t2.size()) {
                     g2.setColor(t2.get(i).getColor());
-                    g2.fill(t2.get(i).getAgua());
+                    g2.fill(t2.get(i));
                 }
                 if (i < t3.size()) {
                     g.setColor(t3.get(i).getColor());
-                    g2.fill(t3.get(i).getAgua());
+                    g2.fill(t3.get(i));
                 }
                 if (i < t4.size()) {
                     g.setColor(t4.get(i).getColor());
-                    g2.fill(t4.get(i).getAgua());
+                    g2.fill(t4.get(i));
                 }
                 if (i < t5.size()) {
                     g.setColor(t5.get(i).getColor());
-                    g2.fill(t5.get(i).getAgua());
+                    g2.fill(t5.get(i));
                 }
             }
         } catch (Exception e) {
