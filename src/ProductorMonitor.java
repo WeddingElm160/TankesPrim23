@@ -12,9 +12,9 @@ public class ProductorMonitor extends Thread {
     private int executionCount;
     private boolean resetRequested;
 
-    public ProductorMonitor(LiFoTanke tanke[], int x, int y, Color color) {
+    public ProductorMonitor(LiFoTanke tanke[], boolean isRunning, int x, int y, Color color) {
         this.tanke = tanke;
-        this.isRunning = true;
+        this.isRunning = isRunning;
         this.x = x;
         this.y = y;
         this.color = color;

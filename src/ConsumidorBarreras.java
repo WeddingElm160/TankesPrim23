@@ -13,11 +13,11 @@ public class ConsumidorBarreras extends Thread {
 
     /*private int executionCount;
     private boolean resetRequested;*/
-    public ConsumidorBarreras(CyclicBarrier barrera, LiFoTanke tanke[], int n) {
+    public ConsumidorBarreras(CyclicBarrier barrera, LiFoTanke tanke[], boolean isRunning, int n) {
         this.barrera = barrera;
         this.tanke = tanke;
         this.n = n;
-        this.isRunning = true;
+        this.isRunning = isRunning;
     }
 
     @Override

@@ -10,10 +10,10 @@ public class ConsumidorMonitor extends Thread {
     private int executionCount;
     private boolean resetRequested;
 
-    public ConsumidorMonitor(LiFoTanke tanke[], int n) {
+    public ConsumidorMonitor(LiFoTanke tanke[], boolean isRunning, int n) {
         this.tanke = tanke;
         this.n = n;
-        this.isRunning = true;
+        this.isRunning = isRunning;
     }
 
     @Override

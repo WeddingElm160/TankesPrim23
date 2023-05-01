@@ -15,13 +15,13 @@ public class ProductorBarreras extends Thread {
     private int executionCount;
     private boolean resetRequested;
 
-    public ProductorBarreras(CyclicBarrier barrera, LiFoTanke tanke[], int x, int y, Color color) {
+    public ProductorBarreras(CyclicBarrier barrera, LiFoTanke tanke[], boolean isRunning, int x, int y, Color color) {
         this.barrera = barrera;
         this.tanke = tanke;
         this.x = x;
         this.y = y;
         this.color = color;
-        this.isRunning = true;
+        this.isRunning = isRunning;
     }
 
     @Override
