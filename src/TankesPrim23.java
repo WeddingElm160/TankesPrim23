@@ -75,9 +75,8 @@ public class TankesPrim23 extends JFrame {
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        // Verifica si se presionó la tecla ESC
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-          System.exit(0);// Cierra la ventana
+          System.exit(0);
         }
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
           pauseState();
