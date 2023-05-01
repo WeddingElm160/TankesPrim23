@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import mpi.MPI;
 
 public class ProductorBarreras extends Thread {
 
@@ -37,7 +38,7 @@ public class ProductorBarreras extends Thread {
             if (tanke[0].size() < 20) {
                 tanke[0].pushAgua(new Agua(x, y - ((y / 20) - 2) * tanke[0].size(), 100, (y / 20) - 2, color));
                 executionCount++;
-                //dibujar.repaint();
+                MPI.COMM_WORLD.Isend(tanke, 0, 1, MPI.OBJECT, 0, 0);
                 try {
                     barrera.await();
                 } catch (InterruptedException ex) {

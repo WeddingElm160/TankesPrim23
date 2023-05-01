@@ -1,4 +1,7 @@
 
+import mpi.MPI;
+
+
 public class ConsumidorMonitor extends Thread {
 
     private final LiFoTanke tanke[];
@@ -31,7 +34,7 @@ public class ConsumidorMonitor extends Thread {
                 }
                 tanke[0].popAgua();
                 executionCount++;
-                //dibujar.repaint();
+                MPI.COMM_WORLD.Isend(tanke, 0, 1, MPI.OBJECT, 0, 0);
             }
             
             try {

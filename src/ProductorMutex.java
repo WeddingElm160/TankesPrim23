@@ -39,8 +39,7 @@ public class ProductorMutex extends Thread {
             if (tanke[0].size() < 20) {
                 mutex.lock();
                 tanke[0].pushAgua(new Agua(x, y - ((y / 20) - 2) * tanke[0].size(), 100, (y / 20) - 2, color));
-                executionCount++;               
-                //MPI.COMM_WORLD.Send(tanke, 0, 1, MPI.OBJECT, 0, 0);
+                executionCount++;
                 MPI.COMM_WORLD.Isend(tanke, 0, 1, MPI.OBJECT, 0, 0);
                 mutex.unlock();
             }

@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import mpi.MPI;
 
 public class ConsumidorVC extends Thread {
 
@@ -39,7 +40,7 @@ public class ConsumidorVC extends Thread {
                 }
                 tanke[0].popAgua();
                 executionCount++;
-                //dibujar.repaint();
+                MPI.COMM_WORLD.Isend(tanke, 0, 1, MPI.OBJECT, 0, 0);
                 condition.signal();
             } catch (Exception e) {} 
             finally {

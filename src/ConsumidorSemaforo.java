@@ -3,6 +3,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpi.MPI;
 //acer un mutex con la clase hecha por nosotros y otra con la librería en total 5 tanques
 //graficar condiciones de competencia, variable de cerradura, alternancia estricta, mutex con concurrent
 
@@ -38,7 +39,7 @@ public class ConsumidorSemaforo extends Thread {
                 if (tanke[0].size() > 0) {
                     tanke[0].popAgua();
                     executionCount++;
-                    //dibujar.repaint();
+                    MPI.COMM_WORLD.Isend(tanke, 0, 1, MPI.OBJECT, 0, 0);
                 }
             } catch (Exception e) {} 
             finally {
