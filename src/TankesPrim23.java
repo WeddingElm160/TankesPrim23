@@ -3,8 +3,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
@@ -18,16 +16,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.*;
 import mpi.MPI;
 
-public class TankesPrim23 extends JFrame implements ActionListener {
+public class TankesPrim23 extends JFrame{
 
   private DibujaTank panelTank;
-  private GraficasPanel graficas;
+  private static GraficasPanel graficas;
   private Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
   static int h = (int) (Toolkit.getDefaultToolkit().getScreenSize().height - Toolkit.getDefaultToolkit().getScreenSize().height * 0.2),
           w = 100, y = 80, x = 50, sep = 125;
-
-  private static boolean isRunning;
-  private static Timer refresh;
   private static ProductorMutex productorM1, productorM2;
   private static ConsumidorMutex consumidorM1, consumidorM2;
   private static ProductorSemaforo productorS1, productorS2;
@@ -39,22 +34,26 @@ public class TankesPrim23 extends JFrame implements ActionListener {
   private static ProductorBarreras productorB1, productorB2;
   private static ConsumidorBarreras consumidorB1, consumidorB2;
   private static LiFoTanke[] tankes;
-  private static Queue<Integer>[] volumenTankes;
+  private static Queue<Integer>[] volumenTankes, cuentaProductor, cuentaConsumidor;
+  private String[] names;
 
   TankesPrim23() {
+    names = new String[5];
+    names[0] = "Mutex"; 
+    names[1] = "Semaforos"; 
+    names[2] = "Variables de condición"; 
+    names[3] = "Monitores"; 
+    names[4] = "Barreras"; 
     tankes = new LiFoTanke[5];
-    tankes[0] = new LiFoTanke("Mutex");
-    tankes[1] = new LiFoTanke("Semaforos");
-    tankes[2] = new LiFoTanke("Variables de condición");
-    tankes[3] = new LiFoTanke("Monitores");
-    tankes[4] = new LiFoTanke("Barreras");
     volumenTankes = new Queue[5];
-    for (int i = 0; i < volumenTankes.length; i++) {
+    cuentaProductor = new Queue[5];
+    cuentaConsumidor = new Queue[5];
+    for (int i = 0; i < 5; i++) {
+      tankes[i] = new LiFoTanke(names[i]);
       volumenTankes[i] = new LinkedList<>(Collections.nCopies(20, 0));
+      cuentaProductor[i] = new LinkedList<>(Collections.nCopies(20, 0));
+      cuentaConsumidor[i] = new LinkedList<>(Collections.nCopies(20, 0));
     }
-    isRunning = false;
-    refresh = new Timer(2000, this);
-    refresh.start();
     setTitle("Tankes");
     setSize(1920, 1080);
     setLocationRelativeTo(null);
@@ -64,7 +63,7 @@ public class TankesPrim23 extends JFrame implements ActionListener {
     setUndecorated(true);
     panelTank = new DibujaTank(tankes, h, w, y, x, sep);
     panelTank.setSize(700, screen.height);
-    graficas = new GraficasPanel(tankes, volumenTankes);
+    graficas = new GraficasPanel(cuentaProductor, cuentaConsumidor, volumenTankes, names);
     graficas.setBounds(700, 0, screen.width - 700, screen.height);
     System.out.println(screen.width + " - " + screen.height);
 
@@ -78,9 +77,6 @@ public class TankesPrim23 extends JFrame implements ActionListener {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
           System.exit(0);// Cierra la ventana
         }
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-          changebtnState();
-        }
       }
     });
   }
@@ -91,101 +87,6 @@ public class TankesPrim23 extends JFrame implements ActionListener {
 
   public DibujaTank getPanelTank() {
     return panelTank;
-  }
-
-  void changebtnState() {
-    if (isRunning) {
-      isRunning = true;
-      if (tankes[0].getCuentaConsumidor().size() <= 20) {
-
-        productorS1.start();
-        consumidorS1.start();
-        productorM1.start();
-        consumidorM1.start();
-        productorS2.start();
-        consumidorS2.start();
-        productorM2.start();
-        consumidorM2.start();
-        productorVC1.start();
-        consumidorVC1.start();
-        productorVC2.start();
-        consumidorVC2.start();
-        productorMo1.start();
-        consumidorMo1.start();
-        productorMo2.start();
-        consumidorMo2.start();
-        productorB1.start();
-        consumidorB1.start();
-        productorB2.start();
-        consumidorB2.start();
-      } else {
-        graficas.reanudarGrafica();
-      }
-      refresh.start();
-      graficas.setVisible(true);
-    } else {
-      isRunning = false;
-      productorS1.interrupt();
-      consumidorS1.interrupt();
-      productorM1.interrupt();
-      consumidorM1.interrupt();
-      productorS2.interrupt();
-      consumidorS2.interrupt();
-      productorM2.interrupt();
-      consumidorM2.interrupt();
-      productorVC1.interrupt();
-      consumidorVC1.interrupt();
-      productorVC2.interrupt();
-      consumidorVC2.interrupt();
-      productorMo1.interrupt();
-      consumidorMo1.interrupt();
-      productorMo2.interrupt();
-      consumidorMo2.interrupt();
-      productorB1.interrupt();
-      consumidorB1.interrupt();
-      productorB2.interrupt();
-      consumidorB2.interrupt();
-      refresh.stop();
-      graficas.pausarGrafica();
-    }
-    productorS1.setIsRunning(isRunning);
-    consumidorS1.setIsRunning(isRunning);
-    productorM1.setIsRunning(isRunning);
-    consumidorM1.setIsRunning(isRunning);
-    productorS2.setIsRunning(isRunning);
-    consumidorS2.setIsRunning(isRunning);
-    productorM2.setIsRunning(isRunning);
-    consumidorM2.setIsRunning(isRunning);
-    productorVC1.setIsRunning(isRunning);
-    consumidorVC1.setIsRunning(isRunning);
-    productorVC2.setIsRunning(isRunning);
-    consumidorVC2.setIsRunning(isRunning);
-    productorMo1.setIsRunning(isRunning);
-    consumidorMo1.setIsRunning(isRunning);
-    productorMo2.setIsRunning(isRunning);
-    consumidorMo2.setIsRunning(isRunning);
-    productorB1.setIsRunning(isRunning);
-    consumidorB1.setIsRunning(isRunning);
-    productorB2.setIsRunning(isRunning);
-    consumidorB2.setIsRunning(isRunning);
-  }
-
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    //MPI.COMM_WORLD.Recv(aux1, 0, 1, MPI.INT, 1, 0);
-    /*tankes[0].desplazar(productorM1.getExecutionCount()+productorM2.getExecutionCount(),consumidorM1.getExecutionCount()+consumidorM2.getExecutionCount());
-    tankes[1].desplazar(productorS1.getExecutionCount()+productorS2.getExecutionCount(),consumidorS1.getExecutionCount()+consumidorS2.getExecutionCount());
-    tankes[2].desplazar(productorVC1.getExecutionCount()+productorVC2.getExecutionCount(),consumidorVC1.getExecutionCount()+consumidorVC2.getExecutionCount());
-    tankes[3].desplazar(productorMo1.getExecutionCount()+productorMo2.getExecutionCount(),consumidorMo1.getExecutionCount()+consumidorMo2.getExecutionCount());
-    tankes[4].desplazar(productorB1.getExecutionCount()+productorB2.getExecutionCount(),consumidorB1.getExecutionCount()+consumidorB2.getExecutionCount());
-
-    volumenTankes[0].add(tankes[0].size());
-    volumenTankes[1].add(tankes[1].size());
-    volumenTankes[2].add(tankes[2].size());
-    volumenTankes[3].add(tankes[3].size());
-    volumenTankes[4].add(tankes[4].size());
-        
-        graficas.actualizarTodasGraficas();*/
   }
 
   public static void main(String[] args) throws InterruptedException {
@@ -199,55 +100,25 @@ public class TankesPrim23 extends JFrame implements ActionListener {
     TankesPrim23 frame;
     int buffCount[] = new int[2];
     int recvBuffCount[] = new int[12];
-    
-    
-
+    MPI.COMM_WORLD.Gather(buffCount, 0, 2, MPI.INT, recvBuffCount, 0, 2, MPI.INT, 0);
     if (rank == 0) {
       System.setProperty("sun.java2d.uiScale", "1");
+      System.out.println(recvBuffCount[0]+" "+ recvBuffCount[1]+" "+recvBuffCount[2]);
       frame = new TankesPrim23();
       System.arraycopy(frame.getTankes(), 0, buffTabkes, 1, frame.getTankes().length);
       frame.setVisible(true);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-      new Thread(() -> {
-        while (true) {
-          MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 1, 0);
-          tankes[0] = tanke[0];
-          frame.getPanelTank().repaint();
-        }
-      }).start();
-      new Thread(() -> {
-        while (true) {
-          MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 2, 0);
-          tankes[1] = tanke[0];
-          frame.getPanelTank().repaint();
-        }
-      }).start();
-      new Thread(() -> {
-        while (true) {
-          MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 3, 0);
-          tankes[2] = tanke[0];
-          frame.getPanelTank().repaint();
-        }
-      }).start();
-      new Thread(() -> {
-        while (true) {
-          MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 4, 0);
-          tankes[3] = tanke[0];
-          frame.getPanelTank().repaint();
-        }
-      }).start();
-      new Thread(() -> {
-        while (true) {
-          MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 5, 0);
-          tankes[4] = tanke[0];
-          frame.getPanelTank().repaint();
-        }
-      }).start();
-      new Timer(2000, (ActionEvent e) -> {
-          //MPI.COMM_WORLD.Gather(buffCount, 0, 2, MPI.INT, recvBuffCount, 0, 2, MPI.INT, 0);
-          //System.out.println(recvBuffCount);
+      
+      for(int i=1; i<=5; i++){
+        int index = i;
+        new Thread(() -> {
+          while (true) {
+            MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, index, 0);
+            tankes[index-1] = tanke[0];
+            frame.getPanelTank().repaint();
+          }
         }).start();
+      }
     }
     
     MPI.COMM_WORLD.Scatter(buffTabkes, 0, 1, MPI.OBJECT, tanke, 0, 1, MPI.OBJECT, 0);
@@ -262,11 +133,6 @@ public class TankesPrim23 extends JFrame implements ActionListener {
         productorM2 = new ProductorMutex(mutex2, tanke, true, x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorM2 = new ConsumidorMutex(mutex2, tanke, true, 0);
         productorM1.start(); consumidorM1.start(); productorM2.start(); consumidorM2.start();
-        new Timer(2000, (ActionEvent e) -> {
-          buffCount[0] = productorM1.getExecutionCount()+ productorM2.getExecutionCount();
-          buffCount[1] = consumidorM1.getExecutionCount()+ consumidorM2.getExecutionCount();
-          //MPI.COMM_WORLD.Gather(buffCount, 0, 2, MPI.INT, recvBuffCount, 0, 2, MPI.INT, 0);
-        }).start();
         break;
       case 2:
         System.out.println("Nucleo #"+rank + " -> " + tanke[0].getName());
@@ -277,11 +143,6 @@ public class TankesPrim23 extends JFrame implements ActionListener {
         productorS2 = new ProductorSemaforo(semaforo2, tanke, true, x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorS2 = new ConsumidorSemaforo(semaforo2, tanke, true, 1);
         productorS1.start(); consumidorS1.start(); productorS2.start(); consumidorS2.start();
-        new Timer(2000, (ActionEvent e) -> {
-          buffCount[0] = productorS1.getExecutionCount()+ productorS2.getExecutionCount();
-          buffCount[1] = consumidorS1.getExecutionCount()+ consumidorS2.getExecutionCount();
-          //MPI.COMM_WORLD.Gather(buffCount, 0, 2, MPI.INT, recvBuffCount, 0, 2, MPI.INT, 0);
-        }).start();
         break;
       case 3:
         System.out.println("Nucleo #"+rank + " -> " + tanke[0].getName());
@@ -294,11 +155,6 @@ public class TankesPrim23 extends JFrame implements ActionListener {
         productorVC2 = new ProductorVC(tanke, mutex4, condition2, true, x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorVC2 = new ConsumidorVC(tanke, true, mutex4, condition2, 2);
         productorVC1.start(); consumidorVC1.start(); productorVC2.start(); consumidorVC2.start();
-        new Timer(2000, (ActionEvent e) -> {
-          buffCount[0] = productorVC1.getExecutionCount()+ productorVC2.getExecutionCount();
-          buffCount[1] = consumidorVC1.getExecutionCount()+ consumidorVC2.getExecutionCount();
-          //MPI.COMM_WORLD.Gather(buffCount, 0, 2, MPI.INT, recvBuffCount, 0, 2, MPI.INT, 0);
-        }).start();
         break;
       case 4:
         System.out.println("Nucleo #"+rank + " -> " + tanke[0].getName());
@@ -307,11 +163,6 @@ public class TankesPrim23 extends JFrame implements ActionListener {
         productorMo2 = new ProductorMonitor(tanke, x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorMo2 = new ConsumidorMonitor(tanke, 3);
         productorMo1.start(); consumidorMo1.start(); productorMo2.start(); consumidorMo2.start();
-        new Timer(2000, (ActionEvent e) -> {
-          buffCount[0] = productorMo1.getExecutionCount()+ productorMo2.getExecutionCount();
-          buffCount[1] = consumidorMo1.getExecutionCount()+ consumidorMo2.getExecutionCount();
-          //MPI.COMM_WORLD.Gather(buffCount, 0, 2, MPI.INT, recvBuffCount, 0, 2, MPI.INT, 0);
-        }).start();
         break;
       case 5:
         System.out.println("Nucleo #"+rank + " -> " + tanke[0].getName());
@@ -322,16 +173,47 @@ public class TankesPrim23 extends JFrame implements ActionListener {
         productorB2 = new ProductorBarreras(barrera2, tanke,x +(sep * (rank - 1)), h + 40, Color.RED);
         consumidorB2 = new ConsumidorBarreras(barrera2, tanke, 4);
         productorB1.start(); consumidorB1.start(); productorB2.start(); consumidorB2.start();
-        new Timer(2000, (ActionEvent e) -> {
-          buffCount[0] = productorB1.getExecutionCount()+ productorB2.getExecutionCount();
-          buffCount[1] = consumidorB1.getExecutionCount()+ consumidorB2.getExecutionCount();
-          //MPI.COMM_WORLD.Gather(buffCount, 0, 2, MPI.INT, recvBuffCount, 0, 2, MPI.INT, 0);
-        }).start();
         break;
     }
     
-    
     MPI.Finalize();
+    while (true) {
+      Thread.sleep(2000);
+      
+      switch(rank){
+        case 1:
+          buffCount[0] = productorM1.getExecutionCount()+ productorM2.getExecutionCount();
+          buffCount[1] = consumidorM1.getExecutionCount()+ consumidorM2.getExecutionCount();
+          break;
+        case 2:
+          buffCount[0] = productorS1.getExecutionCount()+ productorS2.getExecutionCount();
+          buffCount[1] = consumidorS1.getExecutionCount()+ consumidorS2.getExecutionCount();
+          break;
+        case 3:
+          buffCount[0] = productorVC1.getExecutionCount()+ productorVC2.getExecutionCount();
+          buffCount[1] = consumidorVC1.getExecutionCount()+ consumidorVC2.getExecutionCount();
+          break;
+         case 4:
+          buffCount[0] = productorMo1.getExecutionCount()+ productorMo2.getExecutionCount();
+          buffCount[1] = consumidorMo1.getExecutionCount()+ consumidorMo2.getExecutionCount();
+          break;
+        case 5:
+          buffCount[0] = productorB1.getExecutionCount()+ productorB2.getExecutionCount();
+          buffCount[1] = consumidorB1.getExecutionCount()+ consumidorB2.getExecutionCount();
+          break;
+      }
+      MPI.COMM_WORLD.Gather(buffCount, 0, 2, MPI.INT, recvBuffCount, 0, 2, MPI.INT, 0);
+      if (rank == 0){
+        for(int i = 2; i<12; i+=2){
+          cuentaProductor[i/2-1].add(recvBuffCount[i]);
+          cuentaConsumidor[i/2-1].add(recvBuffCount[i+1]);
+          volumenTankes[i/2-1].add(tankes[i/2-1].size());
+        }
+        graficas.actualizarTodasGraficas();
+      }
+        
+      
+    }
 
   }
 }
