@@ -33,7 +33,7 @@ public class ConsumidorMutex extends Thread {
                 tanke[0].popAgua();
                 executionCount++;
                 //dibujar.repaint();
-                MPI.COMM_WORLD.Send(tanke, 0, 1, MPI.OBJECT, 0, 0);
+                //MPI.COMM_WORLD.Send(tanke, 0, 1, MPI.OBJECT, 0, 0);
                 mutex.unlock();
             }
             try {

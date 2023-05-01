@@ -221,14 +221,21 @@ public class TankesPrim23 extends JFrame implements ActionListener{
         switch(rank){
             case 0:
               int dest = 0;
+              tanke[0] = null;
+              
               while(true){
-                  //MPI.COMM_WORLD.Recv(aux, 0, 1, MPI.INT, 1, 0);
-                  Status s = MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 1, 0);
+                  /*MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 1, 0);
+                  MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 2, 0);*/
                   
-                  System.out.println(tanke[0].getName()+" -> "+s.source);
+                  //System.out.println(tanke[0].getName()+" -> nodo:");
+                  
+                  MPI.COMM_WORLD.Recv_init(tanke, 0, 1, MPI.OBJECT, 1, 0);
+                  if(tanke[0]!= null)
+                    System.out.println(tanke[0].getName());
+                  //System.out.println("2");
               }
             case 1:
-                System.out.println(rank+" -> "+tanke[0].getName());
+                //System.out.println(rank+" -> "+tanke[0].getName());
                 Lock mutex = new ReentrantLock();
                 Lock mutex2 = new ReentrantLock();
                 productorM1 = new ProductorMutex(mutex, tanke, true, x + (sep * rank-1), h + 40, Color.GREEN);
@@ -236,10 +243,13 @@ public class TankesPrim23 extends JFrame implements ActionListener{
                 productorM2 = new ProductorMutex(mutex2, tanke, true,x  + (sep * rank-1), h + 40, Color.RED);
                 consumidorM2 = new ConsumidorMutex(mutex2, tanke, true, 0);
                 //productorM1.start(); consumidorM1.start(); productorM2.start(); consumidorM2.start();
+                MPI.COMM_WORLD.Send_init(tanke, 0, 1, MPI.OBJECT, 0, 0);
+                System.out.println("Enviado");
                 break;
             case 2: 
-              System.out.println("dfsdf");
-              MPI.COMM_WORLD.Send(tanke, 0, 1, MPI.OBJECT, 0, 0);
+              
+              //MPI.COMM_WORLD.Send(tanke, 0, 1, MPI.OBJECT, 0, 0);
+              break;
                 /*System.out.println(rank+" -> "+tanke[0].getName());
                 Semaphore semaforo = new Semaphore(1, true);
                 Semaphore semaforo2 = new Semaphore(1, true);
