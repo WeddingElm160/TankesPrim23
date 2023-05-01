@@ -23,19 +23,9 @@ public class DibujaTank extends JPanel{
         System.out.println("Hola mundo - Nucleo #"+MPI.COMM_WORLD.Rank());
     }
     
-    public void actualizar(LiFoTanke tanke){
-      switch(tanke.getName()){
-        case "Mutex":
-          break;
-        case "Semaforos":
-          break;
-        case "Variables de condición":
-          break;
-        case "Monitores":
-          break;
-        case "Barreras":
-          break;
-      }
+    public void actualizar(LiFoTanke tanke, int index){
+      tankes[index] = tanke;
+      repaint();
     }
 
     @Override
