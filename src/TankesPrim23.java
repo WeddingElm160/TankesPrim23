@@ -98,7 +98,6 @@ public class TankesPrim23 extends JFrame {
     for (int i = 1; i <= 5; i++) {
       MPI.COMM_WORLD.Isend(buffRun, 0, 1, MPI.BOOLEAN, i, 1);
     }
-
   }
 
   public static LiFoTanke[] getTankes() {
@@ -112,8 +111,6 @@ public class TankesPrim23 extends JFrame {
   public static void main(String[] args) throws InterruptedException {
     MPI.Init(args);
     int rank = MPI.COMM_WORLD.Rank();
-    //int size = MPI.COMM_WORLD.Size();
-    //System.out.println("Hola mundo - Nucleo #" + rank);
 
     LiFoTanke buffTabkes[] = new LiFoTanke[6];
     LiFoTanke tanke[] = new LiFoTanke[1];
@@ -125,7 +122,6 @@ public class TankesPrim23 extends JFrame {
     MPI.COMM_WORLD.Gather(buffCount, 0, 2, MPI.INT, recvBuffCount, 0, 2, MPI.INT, 0);
     if (rank == 0) {
       System.setProperty("sun.java2d.uiScale", "1");
-      System.out.println(recvBuffCount[0] + " " + recvBuffCount[1] + " " + recvBuffCount[2]);
       frame = new TankesPrim23();
       System.arraycopy(frame.getTankes(), 0, buffTabkes, 1, frame.getTankes().length);
       frame.setVisible(true);
@@ -196,10 +192,7 @@ public class TankesPrim23 extends JFrame {
         consumidorM1 = new ConsumidorMutex(mutex, tanke, buffRun[0], 0);
         productorM2 = new ProductorMutex(mutex2, tanke, buffRun[0], x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorM2 = new ConsumidorMutex(mutex2, tanke, buffRun[0], 0);
-        productorM1.start();
-        consumidorM1.start();
-        productorM2.start();
-        consumidorM2.start();
+        productorM1.start(); consumidorM1.start(); productorM2.start(); consumidorM2.start();
         break;
       case 2:
         System.out.println("Nucleo #" + rank + " -> " + tanke[0].getName());
@@ -209,10 +202,7 @@ public class TankesPrim23 extends JFrame {
         consumidorS1 = new ConsumidorSemaforo(semaforo, tanke, buffRun[0], 1);
         productorS2 = new ProductorSemaforo(semaforo2, tanke, buffRun[0], x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorS2 = new ConsumidorSemaforo(semaforo2, tanke, buffRun[0], 1);
-        productorS1.start();
-        consumidorS1.start();
-        productorS2.start();
-        consumidorS2.start();
+        productorS1.start(); consumidorS1.start(); productorS2.start(); consumidorS2.start();
         break;
       case 3:
         System.out.println("Nucleo #" + rank + " -> " + tanke[0].getName());
@@ -224,10 +214,7 @@ public class TankesPrim23 extends JFrame {
         consumidorVC1 = new ConsumidorVC(tanke, buffRun[0], mutex3, condition1, 2);
         productorVC2 = new ProductorVC(tanke, mutex4, condition2, buffRun[0], x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorVC2 = new ConsumidorVC(tanke, buffRun[0], mutex4, condition2, 2);
-        productorVC1.start();
-        consumidorVC1.start();
-        productorVC2.start();
-        consumidorVC2.start();
+        productorVC1.start(); consumidorVC1.start(); productorVC2.start(); consumidorVC2.start();
         break;
       case 4:
         System.out.println("Nucleo #" + rank + " -> " + tanke[0].getName());
@@ -235,10 +222,7 @@ public class TankesPrim23 extends JFrame {
         consumidorMo1 = new ConsumidorMonitor(tanke, buffRun[0], 3);
         productorMo2 = new ProductorMonitor(tanke, buffRun[0], x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorMo2 = new ConsumidorMonitor(tanke, buffRun[0], 3);
-        productorMo1.start();
-        consumidorMo1.start();
-        productorMo2.start();
-        consumidorMo2.start();
+        productorMo1.start(); consumidorMo1.start(); productorMo2.start(); consumidorMo2.start();
         break;
       case 5:
         System.out.println("Nucleo #" + rank + " -> " + tanke[0].getName());
@@ -248,10 +232,7 @@ public class TankesPrim23 extends JFrame {
         consumidorB1 = new ConsumidorBarreras(barrera1, tanke, buffRun[0], 4);
         productorB2 = new ProductorBarreras(barrera2, tanke, buffRun[0], x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorB2 = new ConsumidorBarreras(barrera2, tanke, buffRun[0], 4);
-        productorB1.start();
-        consumidorB1.start();
-        productorB2.start();
-        consumidorB2.start();
+        productorB1.start(); consumidorB1.start(); productorB2.start(); consumidorB2.start();
         break;
     }
 
@@ -294,6 +275,5 @@ public class TankesPrim23 extends JFrame {
         graficas.actualizarTodasGraficas();
       }
     }
-
   }
 }
