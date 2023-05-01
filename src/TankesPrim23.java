@@ -187,16 +187,16 @@ public class TankesPrim23 extends JFrame implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     //MPI.COMM_WORLD.Recv(aux1, 0, 1, MPI.INT, 1, 0);
     /*tankes[0].desplazar(productorM1.getExecutionCount()+productorM2.getExecutionCount(),consumidorM1.getExecutionCount()+consumidorM2.getExecutionCount());
-        tankes[1].desplazar(productorS1.getExecutionCount()+productorS2.getExecutionCount(),consumidorS1.getExecutionCount()+consumidorS2.getExecutionCount());
-        tankes[2].desplazar(productorVC1.getExecutionCount()+productorVC2.getExecutionCount(),consumidorVC1.getExecutionCount()+consumidorVC2.getExecutionCount());
-        tankes[3].desplazar(productorMo1.getExecutionCount()+productorMo2.getExecutionCount(),consumidorMo1.getExecutionCount()+consumidorMo2.getExecutionCount());
-        tankes[4].desplazar(productorB1.getExecutionCount()+productorB2.getExecutionCount(),consumidorB1.getExecutionCount()+consumidorB2.getExecutionCount());
-        
-        volumenTankes[0].add(tankes[0].size());
-        volumenTankes[1].add(tankes[1].size());
-        volumenTankes[2].add(tankes[2].size());
-        volumenTankes[3].add(tankes[3].size());
-        volumenTankes[4].add(tankes[4].size());
+    tankes[1].desplazar(productorS1.getExecutionCount()+productorS2.getExecutionCount(),consumidorS1.getExecutionCount()+consumidorS2.getExecutionCount());
+    tankes[2].desplazar(productorVC1.getExecutionCount()+productorVC2.getExecutionCount(),consumidorVC1.getExecutionCount()+consumidorVC2.getExecutionCount());
+    tankes[3].desplazar(productorMo1.getExecutionCount()+productorMo2.getExecutionCount(),consumidorMo1.getExecutionCount()+consumidorMo2.getExecutionCount());
+    tankes[4].desplazar(productorB1.getExecutionCount()+productorB2.getExecutionCount(),consumidorB1.getExecutionCount()+consumidorB2.getExecutionCount());
+
+    volumenTankes[0].add(tankes[0].size());
+    volumenTankes[1].add(tankes[1].size());
+    volumenTankes[2].add(tankes[2].size());
+    volumenTankes[3].add(tankes[3].size());
+    volumenTankes[4].add(tankes[4].size());
         
         graficas.actualizarTodasGraficas();*/
   }
@@ -205,7 +205,7 @@ public class TankesPrim23 extends JFrame implements ActionListener {
     MPI.Init(args);
     int rank = MPI.COMM_WORLD.Rank();
     int size = MPI.COMM_WORLD.Size();
-    System.out.println("Hola mundo - Nucleo #" + rank);
+    //System.out.println("Hola mundo - Nucleo #" + rank);
 
     LiFoTanke buffTabkes[] = new LiFoTanke[6];
     LiFoTanke tanke[] = new LiFoTanke[1];
@@ -222,91 +222,87 @@ public class TankesPrim23 extends JFrame implements ActionListener {
         while (true) {
           MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 1, 0);
           frame.getPanelTank().actualizar(tanke[0], 0);
-          System.out.println(tanke[0].getName());
         }
       }).start();
       new Thread(() -> {
         while (true) {
           MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 2, 0);
-          System.out.println(tanke[0].getName());
+          frame.getPanelTank().actualizar(tanke[0], 1);
         }
       }).start();
       new Thread(() -> {
         while (true) {
           MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 3, 0);
-          System.out.println(tanke[0].getName());
+          frame.getPanelTank().actualizar(tanke[0], 2);
         }
       }).start();
       new Thread(() -> {
         while (true) {
           MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 4, 0);
-          System.out.println(tanke[0].getName());
+          frame.getPanelTank().actualizar(tanke[0], 3);
         }
       }).start();
       new Thread(() -> {
         while (true) {
           MPI.COMM_WORLD.Recv(tanke, 0, 1, MPI.OBJECT, 5, 0);
-          System.out.println(tanke[0].getName());
+          frame.getPanelTank().actualizar(tanke[0], 4);
         }
       }).start();
     }
+    
     MPI.COMM_WORLD.Scatter(buffTabkes, 0, 1, MPI.OBJECT, tanke, 0, 1, MPI.OBJECT, 0);
 
     switch (rank) {
       case 1:
-        //System.out.println(rank+" -> "+tanke[0].getName());
+        System.out.println("Nucleo #"+rank+" -> "+tanke[0].getName());
         Lock mutex = new ReentrantLock();
         Lock mutex2 = new ReentrantLock();
-        productorM1 = new ProductorMutex(mutex, tanke, true, x + (sep * rank - 1), h + 40, Color.GREEN);
+        productorM1 = new ProductorMutex(mutex, tanke, true, x + (sep * (rank - 1)), h + 40, Color.GREEN);
         consumidorM1 = new ConsumidorMutex(mutex, tanke, true, 0);
-        productorM2 = new ProductorMutex(mutex2, tanke, true, x + (sep * rank - 1), h + 40, Color.RED);
+        productorM2 = new ProductorMutex(mutex2, tanke, true, x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorM2 = new ConsumidorMutex(mutex2, tanke, true, 0);
-        productorM1.start();
-        consumidorM1.start();
-        productorM2.start();
-        consumidorM2.start();
-        /*i = 0;
-                while (i < 10) {
-                    MPI.COMM_WORLD.Isend(tanke, 0, 1, MPI.OBJECT, 0, 0);
-                    i++;
-                }*/
+        productorM1.start(); consumidorM1.start(); productorM2.start(); consumidorM2.start();
         break;
 
       case 2:
-        System.out.println(rank + " -> " + tanke[0].getName());
+        System.out.println("Nucleo #"+rank + " -> " + tanke[0].getName());
         Semaphore semaforo = new Semaphore(1, true);
         Semaphore semaforo2 = new Semaphore(1, true);
-        productorS1 = new ProductorSemaforo(semaforo, tanke, isRunning, x + (sep * rank - 1), h + 40, Color.GREEN);
+        productorS1 = new ProductorSemaforo(semaforo, tanke, isRunning, x + (sep * (rank - 1)), h + 40, Color.GREEN);
         consumidorS1 = new ConsumidorSemaforo(semaforo, tanke, isRunning, 1);
-        productorS2 = new ProductorSemaforo(semaforo2, tanke, isRunning, x + (sep * rank - 1), h + 40, Color.RED);
+        productorS2 = new ProductorSemaforo(semaforo2, tanke, isRunning, x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorS2 = new ConsumidorSemaforo(semaforo2, tanke, isRunning, 1);
+        productorS1.start(); consumidorS1.start(); productorS2.start(); consumidorS2.start();
         break;
       case 3:
-        System.out.println(rank + " -> " + tanke[0].getName());
+        System.out.println("Nucleo #"+rank + " -> " + tanke[0].getName());
         Lock mutex3 = new ReentrantLock();
         Condition condition1 = mutex3.newCondition();
         Lock mutex4 = new ReentrantLock();
         Condition condition2 = mutex4.newCondition();
-        productorVC1 = new ProductorVC(tanke, mutex3, condition1, isRunning, x + (sep * rank - 1), h + 40, Color.GREEN);
+        productorVC1 = new ProductorVC(tanke, mutex3, condition1, isRunning, x + (sep * (rank - 1)), h + 40, Color.GREEN);
         consumidorVC1 = new ConsumidorVC(tanke, isRunning, mutex3, condition1, 2);
-        productorVC2 = new ProductorVC(tanke, mutex4, condition2, isRunning, x + (sep * rank - 1), h + 40, Color.RED);
+        productorVC2 = new ProductorVC(tanke, mutex4, condition2, isRunning, x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorVC2 = new ConsumidorVC(tanke, isRunning, mutex4, condition2, 2);
+        productorVC1.start(); consumidorVC1.start(); productorVC2.start(); consumidorVC2.start();
         break;
       case 4:
-        System.out.println(rank + " -> " + tanke[0].getName());
-        productorMo1 = new ProductorMonitor(tanke, x + (sep * rank - 1), h + 40, Color.GREEN);
+        System.out.println("Nucleo #"+rank + " -> " + tanke[0].getName());
+        productorMo1 = new ProductorMonitor(tanke, x + (sep * (rank - 1)), h + 40, Color.GREEN);
         consumidorMo1 = new ConsumidorMonitor(tanke, 3);
-        productorMo2 = new ProductorMonitor(tanke, x + (sep * rank - 1), h + 40, Color.RED);
+        productorMo2 = new ProductorMonitor(tanke, x + (sep * (rank - 1)), h + 40, Color.RED);
         consumidorMo2 = new ConsumidorMonitor(tanke, 3);
+        productorMo1.start(); consumidorMo1.start(); productorMo2.start(); consumidorMo2.start();
         break;
       case 5:
-        System.out.println(rank + " -> " + tanke[0].getName());
+        System.out.println("Nucleo #"+rank + " -> " + tanke[0].getName());
         CyclicBarrier barrera1 = new CyclicBarrier(1);
         CyclicBarrier barrera2 = new CyclicBarrier(1);
-        productorB1 = new ProductorBarreras(barrera1, tanke, +(sep * rank - 1), h + 40, Color.GREEN);
+        productorB1 = new ProductorBarreras(barrera1, tanke, +(sep * (rank - 1)), h + 40, Color.GREEN);
         consumidorB1 = new ConsumidorBarreras(barrera1, tanke, 4);
-        productorB2 = new ProductorBarreras(barrera2, tanke, +(sep * rank - 1), h + 40, Color.RED);
+        productorB2 = new ProductorBarreras(barrera2, tanke, +(sep * (rank - 1)), h + 40, Color.RED);
         consumidorB2 = new ConsumidorBarreras(barrera2, tanke, 4);
+        productorB1.start(); consumidorB1.start(); productorB2.start(); consumidorB2.start();
         break;
     }
     MPI.Finalize();
