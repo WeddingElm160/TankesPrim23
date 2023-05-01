@@ -29,7 +29,7 @@ public class ConsumidorMonitor extends Thread {
             synchronized (tanke[0]) {
                 while (tanke[0].isEmpty()) {
                     try {
-                        tanke.wait();
+                        tanke[0].wait();
                     } catch (InterruptedException ex) {}
                 }
                 tanke[0].popAgua();

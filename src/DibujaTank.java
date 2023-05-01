@@ -22,11 +22,6 @@ public class DibujaTank extends JPanel{
         setBackground(Color.white);
         System.out.println("Hola mundo - Nucleo #"+MPI.COMM_WORLD.Rank());
     }
-    
-    public void actualizar(LiFoTanke tanke, int index){
-      tankes[index] = tanke;
-      repaint();
-    }
 
     @Override
     public void paintComponent(Graphics g) {
