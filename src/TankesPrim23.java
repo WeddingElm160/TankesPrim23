@@ -143,7 +143,6 @@ public class TankesPrim23 extends JFrame {
         public void run() {
           while (true) {
             MPI.COMM_WORLD.Recv(buffRun, 0, 1, MPI.BOOLEAN, 0, 1);
-
             switch (rank) {
               case 1:
                 productorM1.setIsRunning(buffRun[0]);
