@@ -7,7 +7,7 @@ public class ConsumidorMutex extends Thread {
     private Lock mutex;
     private LiFoTanke tanke[];
     private int n;
-    private boolean isRunning;
+    private boolean isRunning, halfFull;
     private int executionCount;
     private boolean resetRequested;
 
@@ -28,7 +28,8 @@ public class ConsumidorMutex extends Thread {
                     Thread.currentThread().interrupt();
                 }
             }
-            if (!tanke[0].isEmpty()) {
+            if (!tanke[0].isEmpty() && (halfFull || tanke[0].size() >= 4)) {
+                halfFull = true;
                 mutex.lock();
                 tanke[0].popAgua();
                 executionCount++;
@@ -37,7 +38,7 @@ public class ConsumidorMutex extends Thread {
                 mutex.unlock();
             }
             try {
-                Thread.sleep((int) (Math.random() * 100) + 1000);
+                Thread.sleep((int) (Math.random() * 300) + 1000);
             }catch (InterruptedException ex) {}
             
             if (resetRequested) {
