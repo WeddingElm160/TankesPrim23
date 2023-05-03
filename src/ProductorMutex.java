@@ -1,7 +1,5 @@
 
 import java.awt.Color;
-import java.awt.geom.Rectangle2D;
-import java.util.Stack;
 import java.util.concurrent.locks.*;
 import mpi.MPI;
 //hacer un mutex con la clase hecha por nosotros y otra con la librería en total 5 tanques
