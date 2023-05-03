@@ -28,7 +28,7 @@ public class ConsumidorMutex extends Thread {
                     Thread.currentThread().interrupt();
                 }
             }
-            if (!tanke[0].isEmpty()) {
+           /* if (!tanke[0].isEmpty()) {
                 mutex.lock();
                 tanke[0].popAgua();
                 executionCount++;
@@ -39,6 +39,21 @@ public class ConsumidorMutex extends Thread {
             try {
                 Thread.sleep((int) (Math.random() * 100) + 1000);
             }catch (InterruptedException ex) {}
+            */
+           
+           try {
+                mutex.lock();
+                if (!tanke[0].isEmpty()) {
+                    tanke[0].popAgua();
+                    executionCount++;
+                    MPI.COMM_WORLD.Isend(tanke, 0, 1, MPI.OBJECT, 0, 0);
+                    //Thread.sleep((int) (Math.random() * 100) + 1000);
+                }
+                Thread.sleep((int) (Math.random() * 100) + 1000);
+            } catch (InterruptedException ex) {
+            } finally {
+                mutex.unlock();
+            }
             
             if (resetRequested) {
                 executionCount = 0;
