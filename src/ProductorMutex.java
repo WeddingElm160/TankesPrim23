@@ -53,9 +53,9 @@ public class ProductorMutex extends Thread {
                     tanke[0].pushAgua(new Agua(x, y - ((y / 20) - 2) * tanke[0].size(), 100, (y / 20) - 2, color));
                     executionCount++;
                     MPI.COMM_WORLD.Isend(tanke, 0, 1, MPI.OBJECT, 0, 0);
-                    //Thread.sleep((int) (Math.random() * 100) + 1000);
+                    Thread.sleep((int) (Math.random() * 100) + 1000);
                 }
-                Thread.sleep((int) (Math.random() * 100) + 1000);
+                //Thread.sleep((int) (Math.random() * 100) + 1000);
             } catch (InterruptedException ex) {
             } finally {
                 mutex.unlock();//mutex abre el candado para que sea usado por mutex

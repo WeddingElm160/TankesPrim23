@@ -1,7 +1,3 @@
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -10,7 +6,7 @@ import java.util.Stack;
  * se va a almacenar el agua (en cola) se empila y se desempila
  */
 public class LiFoTanke extends Stack<Agua> {
-    private String name;
+    private String name;//Nombre del tanque
 
     public LiFoTanke(String name) {
         super();
