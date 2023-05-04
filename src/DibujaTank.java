@@ -3,7 +3,6 @@ import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Stack;
-import mpi.MPI;
 
 public class DibujaTank extends JPanel {    //Esta clase es el frame que dibuja los tanques y sus porcentajes
 
@@ -12,7 +11,6 @@ public class DibujaTank extends JPanel {    //Esta clase es el frame que dibuja 
     int h, w, y, x, sep;//variables de ajuste de tamaño de tanques
 
     DibujaTank(LiFoTanke[] tankes, int h, int w, int y, int x, int sep) {
-
         this.tankes = tankes;
         this.h = h;
         this.w = w;
@@ -20,7 +18,6 @@ public class DibujaTank extends JPanel {    //Esta clase es el frame que dibuja 
         this.x = x;
         this.sep = sep;
         setBackground(Color.white);
-        System.out.println("Hola mundo - Nucleo #" + MPI.COMM_WORLD.Rank());
     }
 
     @Override

@@ -66,7 +66,6 @@ public class TankesPrim23 extends JFrame {
         panelTank.setSize(700, screen.height);
         graficas = new GraficasPanel(cuentaProductor, cuentaConsumidor, volumenTankes, names); //S e instancia el panel de gráficas
         graficas.setBounds(700, 0, screen.width - 700, screen.height);
-        System.out.println(screen.width + " - " + screen.height);
 
         add(panelTank, BorderLayout.WEST);//Se añaden los paneles al frame
         add(graficas, BorderLayout.EAST);
