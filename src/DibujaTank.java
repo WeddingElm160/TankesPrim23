@@ -24,7 +24,6 @@ public class DibujaTank extends JPanel {    //Esta clase es el frame que dibuja 
     public void paintComponent(Graphics g) {//Función que se encarga de refrescar el frame con la informacón de los tanques.
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-
         h = (int) (Toolkit.getDefaultToolkit().getScreenSize().height - Toolkit.getDefaultToolkit().getScreenSize().height * 0.2);
         w = 100;
         y = 80;
@@ -48,14 +47,13 @@ public class DibujaTank extends JPanel {    //Esta clase es el frame que dibuja 
         g2.drawString((float) tankes[2].size() / 20 * 100 + "%", x + (sep * 2), y);
         g2.drawString((float) tankes[3].size() / 20 * 100 + "%", x + (sep * 3), y);
         g2.drawString((float) tankes[4].size() / 20 * 100 + "%", x + (sep * 4), y);
-
-        //g2.setColor(Color.BLUE);
+        
         Stack<Agua> t1 = (Stack<Agua>) tankes[0].clone();
         Stack<Agua> t2 = (Stack<Agua>) tankes[1].clone();
         Stack<Agua> t3 = (Stack<Agua>) tankes[2].clone();
         Stack<Agua> t4 = (Stack<Agua>) tankes[3].clone();
         Stack<Agua> t5 = (Stack<Agua>) tankes[4].clone();
-
+        
         for (int i = 0; i < 20; i++) {//Se dibuja el contenido de agua de los tanques
             if (i < t1.size()) {
                 g2.setColor(t1.get(i).getColor());
@@ -78,6 +76,5 @@ public class DibujaTank extends JPanel {    //Esta clase es el frame que dibuja 
                 g2.fill(t5.get(i));
             }
         }
-
     }
 }
